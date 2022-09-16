@@ -1,0 +1,30 @@
+- name: Postgres Astra Install
+  hosts: 
+  become: yes
+  tasks:
+  - name: Update and Upgrade
+    apt:
+      update_cache: yes
+      upgrade: yes 
+
+  - name: Download zsh installer
+    get_url: url=https://repo.postgrespro.ru/pg1c-12/keys/pgpro-repo-add.sh dest=/tmp/pgpro-repo-add.sh
+  
+  - name: Changing perm of "/tmp/pgpro-repo-add.sh", adding mod "777"
+    file: dest=/tmp/pgpro-repo-add.sh mode=0777
+
+  - name: Execute the zsh-installer.sh
+    shell: /tmp/pgpro-repo-add.sh
+
+  - name: Remove the zsh-installer.sh
+    file: path=/tmp/pgpro-repo-add.sh state=absent
+
+  - name: Install
+    apt:
+      name: postgrespro-1c-12
+      update_cache: yes
+  
+  - name: Service status
+    service:
+      name: postgrespro-1c-12
+      enabled: yes

@@ -1,0 +1,57 @@
+- name: Install 1C Server
+  hosts: all
+  become: yes
+
+  tasks:
+   - name: Unzip 
+     unarchive:
+      src: /home/ivan/Linux_Plat_8-3-18-1363-20220905T125840Z-001.zip
+      dest: /home/ivan/
+      remote_src: yes
+
+   -  name: Install a .deb package
+      apt:
+        deb: /home/ivan/Linux_Plat_8-3-18-1363/{{item}}
+      loop:
+      - 1c-enterprise-8.3.18.1363-common_8.3.18-1363_amd64.deb
+      - 1c-enterprise-8.3.18.1363-common-nls_8.3.18-1363_amd64.deb
+      - 1c-enterprise-8.3.18.1363-server_8.3.18-1363_amd64.deb
+      - 1c-enterprise-8.3.18.1363-server-nls_8.3.18-1363_amd64.deb
+      - 1c-enterprise-8.3.18.1363-ws_8.3.18-1363_amd64.deb
+      - 1c-enterprise-8.3.18.1363-ws-nls_8.3.18-1363_amd64.deb
+      - 1c-enterprise-8.3.18.1363-crs_8.3.18-1363_amd64.deb
+
+   -  name: Create two hard links
+      file:
+        src: '/opt/1cv8/x86_64/8.3.18.1363/{{ item.src }}'
+        dest: '{{ item.dest }}'
+        state: hard
+      loop:
+       - { src: srv1cv83, dest: /etc/init.d/srv1cv83 }
+       - { src: srv1cv83.conf, dest: /etc/default/srv1cv83 }
+
+   -  name: Demon reload
+      systemd: daemon_reload=yes
+
+   -  name: Enabled for srv1cv83
+      systemd:
+        name: srv1cv83
+        enabled: yes
+        masked: no
+
+   -  name: Started srv1cv83
+      systemd: name=srv1cv83 state=started
+
+   -  name: Remove the installer
+      file: 
+       path: '{{item}}'
+       state: absent
+      loop:
+      - /home/ivan/Linux_Plat_8-3-18-1363-20220905T125840Z-001.zip
+      - /home/ivan/Linux_Plat_8-3-18-1363
+
+   -  shell: service srv1cv83 status 
+      register: status1c
+
+   -  debug:
+        msg: "Service status: {{status1c}}"

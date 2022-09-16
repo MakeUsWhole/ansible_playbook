@@ -1,0 +1,28 @@
+
+- hosts: PGser
+  become: yes
+
+  vars_files:
+    - vars.yml
+  
+  tasks:
+
+
+    - name: "Copy dump file"
+      copy:
+       src: "/home/restore/{{ dump_file_name }}.dump.gz"
+       dest: "/home/restore/{{ dump_file_name }}.dump.gz"
+       mode: '0777'
+
+    - name: "Restore the database"
+      postgresql_db:
+        state: restore
+        name: "{{restore_db_name}}"
+        target: "/home/restore/{{ dump_file_name }}.dump.gz"
+ 
+
+    - name: "Del dump file on host"
+      file:
+        path: "/home/restore/{{ dump_file_name }}.dump.gz"
+        state: absent
+

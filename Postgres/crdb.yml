@@ -1,0 +1,21 @@
+- hosts: PGser
+  become: yes
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: "Create app database"
+      postgresql_db:
+        state: present
+        name: "{{ create_db_name }}"
+      become_user: postgres
+
+ #   - name: "Grant db user access to app db"
+ #     postgresql_privs:
+ #       type: database
+ #       database: "{{ create_db_name }}"
+ #       roles: postgres
+ #       grant_option: no
+ #       privs: all
+ #     become_user: postgres

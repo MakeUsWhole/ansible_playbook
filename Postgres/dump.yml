@@ -1,0 +1,26 @@
+- hosts: PGser
+  become: yes
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+ 
+    - name: "Back up the database"
+      postgresql_db:
+        state: dump
+        name: "{{ dump_db_name }}"
+        target: "/home/backup/{{ dump_db_name }}.dump.gz"
+      become: yes
+      become_user: postgres
+
+    - name: "Fetch backup from the server"
+      fetch:
+        src: "/home/backup/{{ dump_db_name }}.dump.gz"
+        dest: "/home/backup/{{ dump_db_name }}.dump.gz"
+        flat: yes
+
+    - name: "Delete on host"
+      file:
+         path: "/home/backup/{{ dump_db_name }}.dump.gz"
+         state: absent

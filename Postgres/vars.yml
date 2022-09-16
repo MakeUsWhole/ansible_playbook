@@ -1,0 +1,10 @@
+#Dump DataBase , in dir /home/backup/
+dump_db_name:   
+#Create DataBase
+create_db_name: 
+#Restore DataBase
+restore_db_name: 
+#Restore from dump file , dir: /home/restore/{dump_file_name}.dump.gz 
+dump_file_name: 
+#Drop DataBase
+drop_db_name: 

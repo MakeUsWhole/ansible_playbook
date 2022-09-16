@@ -1,0 +1,18 @@
+- hosts: PGser
+  become: yes
+
+  vars_files:
+  - vars.yml
+  tasks:
+
+  - name: Remove PostgreSQL db
+    become_user: postgres
+    postgresql_db:
+     name: "{{ drop_db_name }}"
+     state: absent
+
+     # - name: Remove PostgreSQL user
+     # become_user: postgres
+     # postgresql_user:
+     # user: "{{ drop_dbuser_name }}"
+     #state: absent
