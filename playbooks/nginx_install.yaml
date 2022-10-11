@@ -1,0 +1,7 @@
+- name: Install and configure nginx
+  hosts: nginx_servers
+  become: yes
+
+  roles:
+    - role: deploy_nginx_proxy
+      when: ansible_system == 'Linux'

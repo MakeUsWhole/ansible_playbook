@@ -1,0 +1,3 @@
+---
+# vars file for deploy_haproxy
+dest_folder: /etc/haproxy/

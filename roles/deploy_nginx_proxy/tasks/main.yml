@@ -1,0 +1,17 @@
+---
+# tasks file for deploy_nginx_proxy
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+- name: Configure nginx
+  copy:
+    src: flask_app.conf
+    dest: "{{ dest_folder }}"
+    mode: 0555
+  notify: Restart nginx
+- name: Start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
