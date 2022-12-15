@@ -1,0 +1,42 @@
+- hosts: all
+  become: true
+
+  vars:
+     installer_on_ansible_server: /home/ivan/setup-full-8.3.21.1622-x86_64.run
+     ver: 8.3.21.1622
+
+
+  tasks:
+
+   - name: Update and Upgrade
+     apt:
+      update_cache: yes
+      upgrade: yes
+      
+   - name: Copy .run file
+     copy:
+       src: "{{installer_on_ansible_server}}"
+       dest: /root/srv1c.run 
+       mode: '0777'
+
+
+   - name: Start install
+     shell: /root/srv1c.run --mode unattended --enable-components server,ws,server_admin,liberica_jre,ru
+
+     
+   - name: 
+     shell: systemctl link /opt/1cv8/x86_64/{{ver}}/srv1cv8-{{ver}}@.service
+
+
+   -  name: Demon reload
+      systemd: daemon_reload=yes
+
+   -  name: Enabled for srv1cv83
+      systemd:
+        name: srv1cv8-{{ver}}@.service
+        enabled: yes
+        masked: no
+
+   -  name: Started srv1cv83
+      shell: systemctl start srv1cv8-{{ver}}@default.service
+ 
