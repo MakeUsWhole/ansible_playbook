@@ -33,7 +33,7 @@
 
    -  name: Enabled for srv1cv83
       systemd:
-        name: srv1cv8-{{ver}}@.service
+        name: srv1cv8-{{ver}}@default.service
         enabled: yes
         masked: no
 
