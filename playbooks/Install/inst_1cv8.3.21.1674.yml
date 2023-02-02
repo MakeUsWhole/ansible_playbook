@@ -1,0 +1,72 @@
+- hosts: all
+  become: true
+
+  vars:
+     installer_1c: /mnt/setup-full-8.3.21.1674-x86_64.run
+     service_conf: /mnt/srv1cv83.service
+
+
+  tasks:
+
+   - name: Update and Upgrade
+     apt:
+      update_cache: yes
+      autoremove: yes
+      upgrade: yes
+
+   - name: Install ttf-mscorefonts-installer
+     apt:
+      name: ttf-mscorefonts-installer
+
+   - name: Install libfreetype6
+     apt:
+      name: libfreetype6
+
+   - name: Install libgsf-1-common
+     apt:
+      name: libgsf-1-common
+
+   - name: Install unixodbc
+     apt:
+      name: unixodbc
+
+#   - name: Install glib2.0
+#     apt:
+#      name: glib2.0
+
+
+   - name: Copy .run file
+     copy:
+       src: "{{installer_1c}}"
+       dest: /mnt/srv1c.run
+       mode: '0777'
+
+
+   - name: Start install
+     shell: /mnt/srv1c.run --mode unattended --enable-components server,ru
+
+
+   - name: Copy service file
+     copy:
+       src: "{{service_conf}}"
+       dest: /etc/systemd/system/srv1cv83.service
+       mode: '0777'
+
+   -  name: Demon reload
+      systemd: daemon_reload=yes
+
+   -  name: Enabled for srv1cv83
+      systemd:
+        name: srv1cv83.service
+        enabled: yes
+        masked: no
+
+   -  name: Started srv1cv83
+      shell: systemctl start srv1cv83.service
+
+   -  name: Remove the installer
+      file:
+       path: '{{item}}'
+       state: absent
+      loop:
+      - /mnt/srv1c.run
