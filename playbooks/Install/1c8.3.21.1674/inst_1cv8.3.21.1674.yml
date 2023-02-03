@@ -17,23 +17,27 @@
    - name: Install ttf-mscorefonts-installer
      apt:
       name: ttf-mscorefonts-installer
+     ignore_errors: True
 
    - name: Install libfreetype6
      apt:
       name: libfreetype6
+     ignore_errors: True
 
    - name: Install libgsf-1-common
      apt:
       name: libgsf-1-common
+     ignore_errors: True
 
    - name: Install unixodbc
      apt:
       name: unixodbc
+     ignore_errors: True
 
-#   - name: Install glib2.0
-#     apt:
-#      name: glib2.0
-
+   - name: Install glib2.0
+     apt:
+      name: glib2.0
+     ignore_errors: True
 
    - name: Copy .run file
      copy:
